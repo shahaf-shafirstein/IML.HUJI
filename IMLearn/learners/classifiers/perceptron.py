@@ -127,3 +127,4 @@ class Perceptron(BaseEstimator):
         """
         from ...metrics import misclassification_error
         return misclassification_error(y, self.predict(X))
+
