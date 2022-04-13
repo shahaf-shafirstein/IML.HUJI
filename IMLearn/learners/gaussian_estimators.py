@@ -209,11 +209,7 @@ class MultivariateGaussian:
         d = np.shape(X)[1]
         m = np.shape(X)[0]
         cov_inverse = np.linalg.inv(cov)
-        X_transpose = X.transpose()
         sum = np.sum((X-mu)@cov_inverse*(X-mu))
-        # for x in X:
-        #     Xi_transpose = np.transpose(x - mu)
-        #     sum += Xi_transpose @ cov_inverse @ (x - mu)
         y = m*np.log(1 / pow(pow(2 * np.pi, d) * np.linalg.det(cov),
                              0.5)) -0.5*sum
         return y

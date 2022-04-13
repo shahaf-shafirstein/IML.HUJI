@@ -13,27 +13,30 @@ def test_univariate_gaussian():
     rand_samples = np.random.normal(10,1,(1000,))
     y = UnivariateGaussian()
     y.fit(rand_samples)
-
     print((y.mu_, y.var_))
 
     # Question 2 - Empirically showing sample mean is consistent
+    # Creating a list "distance" that keeps the absolut distance between the
+    # estimated expectation and the real expectation (which equals 10). Then
+    # shows the results on a graph.
     distance = []
     for i in range(10,1000,10):
         estimator = UnivariateGaussian().fit(rand_samples[:i])
-        distance.append(estimator.mu_-10)
+        distance.append(abs(estimator.mu_-10))
     a_range = range(10,1000,10)
     plt.plot(a_range, distance)
-    plt.title("Q2 - sample mean is consistent")
-    plt.xlabel("sampels num")
-    plt.ylabel("distance")
+    plt.title("Q2 - Sample Mean Is Consistent")
+    plt.xlabel("Number Of Samples")
+    plt.ylabel("Distance (Estimated - Real Expectation)")
     plt.show()
 
     # Question 3 - Plotting Empirical PDF of fitted model
+    # Calculates the PDF's for the random samples and shows them on a graph.
     pdfs = y.pdf(rand_samples)
     plt.plot(rand_samples,pdfs, 'o')
-    plt.xlabel("samples")
+    plt.xlabel("Samples Values")
     plt.ylabel("PDF")
-    plt.title("Q3 - Empirical PDF of fitted model")
+    plt.title("Q3 - Empirical PDF Of Fitted Model")
     plt.show()
 
 
@@ -49,6 +52,9 @@ def test_multivariate_gaussian():
     print(y.cov_)
 
     # Question 5 - Likelihood evaluation
+    # Calculates different expectation vectors according to the values from
+    # linspace and calculates the likelihood respectively. Also extract the
+    # maximum likelihood for the next question.
     log_likelihood_values = np.zeros((200,200))
     values = np.linspace(-10, 10, 200)
     for f1 in range(values.size):
@@ -56,15 +62,17 @@ def test_multivariate_gaussian():
             sec_mu = np.array([values[f1], 0, values[f3], 0])
             log_likelihood_values[f1,f3]=MultivariateGaussian.log_likelihood(sec_mu,
                                                                   cov_matrix,multi_rand_samples)
-            if f1==0 and f3==0:
+            if f1==0 and f3==0: # Initialize the values in the first iteration
                 max_likelihood = log_likelihood_values[f1,f3]
                 f1f3_max_likelihood = (values[f1], values[f3])
+                # calculating for the next question.
             if log_likelihood_values[f1,f3] > max_likelihood:
                 max_likelihood = log_likelihood_values[f1,f3]
                 f1f3_max_likelihood = (values[f1], values[f3])
     fig = go.Figure()
     fig.add_trace(go.Heatmap(x=values,y=values,z=log_likelihood_values))
-    fig.update_layout(title="Q5 - Likelihood evaluation",xaxis_title="f3", yaxis_title="f1")
+    fig.update_layout(title="Q5 - Log Likelihood Evaluation",xaxis_title="f3 "
+                                                                     "Values", yaxis_title="f1 Values")
     fig.show()
 
     # Question 6 - Maximum likelihood
@@ -76,3 +84,12 @@ if __name__ == '__main__':
     np.random.seed(0)
     test_univariate_gaussian()
     test_multivariate_gaussian()
+
+    # s = np.array(
+    #     [1, 5, 2, 3, 8, -4, -2, 5, 1, 10, -10, 4, 5, 2, 7, 1, 1, 3, 2, -1, -3,
+    #      1, -4, 1, 2, 1,
+    #      -4, -4, 1, 3, 2, 6, -6, 8, 3, -6, 4, 1, -2, 3, 1, 4, 1, 4, -2, 3, -1,
+    #      0, 3, 5, 0, -2])
+    # c = UnivariateGaussian()
+    # c.fit(s)
+    # print(UnivariateGaussian.log_likelihood(10,1,s))
